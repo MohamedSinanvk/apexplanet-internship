@@ -1,31 +1,68 @@
-Passive Reconnaissance Passive reconnaissance involves gathering information without directly interacting with the target's systems. This information is publicly available.
+Step 1: Reconnaissance:
 
-Whois: A command-line tool used to query a public database for information about a domain, such as the owner, contact details, and registration dates.
+Objective -
 
-How to use:
+Recon is the first phase of ethical hacking/network security testing.
+Goal: Gather as much information about the target system as possible without causing disruption.
+Helps you plan your next steps (scanning and vulnerability assessment) efficiently.
+There are two main types of recon:
+Passive Recon: Collect information without directly interacting with the target.
+Active Recon: Collect information by interacting lightly with the target (ping, banners).
+Step 1A: Passive Recon
 
-┌──(kali㉿kali)-[~] └─$ whois google.com
-Domain Name: GOOGLE.COM Registry Domain ID: 2138514_DOMAIN_COM-VRSN Registrar WHOIS Server: whois.markmonitor.com Registrar URL: http://www.markmonitor.com Updated Date: 2019-09-09T15:39:04Z Creation Date: 1997-09-15T04:00:00Z Registry Expiry Date: 2028-09-14T04:00:00Z Registrar: MarkMonitor Inc. Registrar IANA ID: 292 Registrar Abuse Contact Email: abusecomplaints@markmonitor.com Registrar Abuse Contact Phone: +1.2086851750 Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited Domain Status: serverDeleteProhibited https://icann.org/epp#serverDeleteProhibited Domain Status: serverTransferProhibited https://icann.org/epp#serverTransferProhibited Domain Status: serverUpdateProhibited https://icann.org/epp#serverUpdateProhibited Name Server: NS1.GOOGLE.COM Name Server: NS2.GOOGLE.COM Name Server: NS3.GOOGLE.COM Name Server: NS4.GOOGLE.COM
+Why passive recon first?
+It’s safe and undetectable.No direct interaction with the target.
+You can gather data from publicly available sources (like Google or WHOIS).
+Gives an overview before actually probing the network.
+These are the tools/methods included in passive recon:
+Whois – Domain ownership and IP info.
+Nslookup – DNS records (A, MX, NS).
+Dig – Detailed DNS info (optional but useful).
+Google Dorking – Search for publicly exposed sensitive info.
+Shodan – Discover exposed devices and services online.
+The tools/methods included in passive recon in detail:
+Whois
+Purpose: Find details about the domain/IP ownership.
+What it tells you: Domain registrar, Creation and expiry dates, Contact info (emails, names), IP addresses allocated to the domain.
+Why it’s useful:Helps you know who owns the domain, what IP ranges are assigned, and may hint at the organization’s infrastructure.
+Nslookup
+Purpose: Check DNS records for the domain.
+What it tells you: IP addresses (A records), Mail servers (MX records), Name servers (NS records)
+Why it’s useful: Understanding DNS mapping helps in network mapping and identifying hosts.
+Dig (optional but recommended)
+Purpose: Provides detailed DNS info.
+Why it’s useful: Gives additional info not always visible in Nslookup. Helpful for discovering subdomains or alternate IPs.
+Google Dorking
+Purpose: Search for sensitive info indexed by Google.
+Why it’s useful: You might find files, directories, or login portals exposed accidentally. Helps understand what the organization leaks publicly.
+Shodan
+Purpose: Scan the internet for devices/services exposed online.
+What it tells you: Open ports and services, Device types, Vulnerable software versions
+Why it’s useful: Helps you know if there are live services publicly accessible that could be exploited.
+Step 1B: Active Recon
 
-Nslookup: A tool for querying the DNS to find information like a domain's IP address, mail servers, and name servers.
-
-How to use:
-
-(kali㉿kali)-[~] └─$ nslookup google.com
-Server: 49.205.72.130 Address: 49.205.72.130#53
-
-Non-authoritative answer: Name: google.com Address: 142.250.183.174 Name: google.com Address: 2404:6800:4007:815::200e
-
-Google Dorking: Using advanced search operators in a search engine to find hidden or specific information on a website.
-
-Shodan: A search engine for internet-connected devices that can find public servers, services, and IoT devices.
-
-Active Reconnaissance Active reconnaissance involves direct interaction with the target network to gather information.
-
-Ping Sweep: A method for sending ICMP (ping) packets to a range of IP addresses to identify which hosts are online and active on a network.
-
-How to use: nmap -sn 192.168.56.0/24
-
-Banner Grabbing: Connecting to a network service to retrieve its introductory message or "banner," which often contains the software name and version number.
-
-How to use: nc -nv [target_ip_address] 80
+Why active recon after passive?
+Passive gives general info.
+Active helps validate what’s alive and running on the network.
+It’s light interaction; doesn’t harm the system.
+These are the tools/methods included in active recon:
+Ping Sweep – Identify which hosts in a subnet are alive.
+Banner Grabbing (FTP) – Check service type and version on FTP port.
+Banner Grabbing (SSH) – Check service type and version on SSH port.
+The tools/methods included in active recon in detail:
+Ping Sweep
+Purpose: Identify which hosts in a subnet are alive.Ping command to chcek whether the host is running.
+Why it’s useful: You don’t waste time scanning dead hosts. Helps you focus on real targets.
+Banner Grabbing
+Purpose:
+Check what services and versions are running on open ports.
+When you connect to a service (like FTP, SSH, HTTP), many servers announce their software name + version in a banner.
+Attackers (or penetration testers) can use that banner info to:
+Identify the exact software running.
+Look up known vulnerabilities for that version.
+Plan targeted attacks or exploits.
+Example: vsFTPd 2.3.4 has a backdoor vulnerability (CVE-2011-2523). Just from this banner, we know the system is vulnerable to a specific exploit.
+Why it’s useful: Knowing service versions helps identify known vulnerabilities.
+Examples:
+FTP banner grab → shows version (e.g., 2.3.4)
+SSH banner grab → shows service details
